@@ -47,7 +47,7 @@ type Server struct {
 
 func NewServer(config *Config, logger *zap.Logger) (*Server, error) {
 	srv := &Server{
-		router: mux.NewRouter(),
+		router: mux.NewRouter().PathPrefix(os.Getenv("PODINFO_PATH_PREFIX")),
 		logger: logger,
 		config: config,
 	}
@@ -108,7 +108,7 @@ func (s *Server) ListenAndServe(stopCh <-chan struct{}) {
 		Handler:      s.router,
 	}
 
-	//s.printRoutes()
+	s.printRoutes()
 
 	// load configs in memory and start watching for changes in the config dir
 	if stat, err := os.Stat(s.config.ConfigPath); err == nil && stat.IsDir() {
